@@ -1,17 +1,32 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '../common/entities/base.entity';
 import { Exclude, Transform } from 'class-transformer';
 import { Todo } from '../todos/todos.entity';
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
+
+export class UserBase extends OmitType(BaseEntity, [
+  'createdAt',
+  'updatedAt',
+] as const) {
+  @ApiProperty({ description: "User's name" })
+  name: string;
+
+  @ApiProperty({ description: "User's email" })
+  email: string;
+
+  @ApiProperty({ description: "User's password" })
+  password: string;
+}
 
 @Entity('users')
-export class User extends BaseEntity {
+export class User extends OmitType(UserBase, ['password'] as const) {
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Column()
-  @ApiResponseProperty()
   name: string;
 
   @Column({ unique: true })
-  @ApiResponseProperty()
   email: string;
 
   @Column()

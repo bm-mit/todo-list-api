@@ -1,14 +1,17 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
+import { UserBase } from '../../users/users.entity';
 
-export class LoginDto {
-  @ApiProperty()
+export class LoginDto extends PickType(UserBase, [
+  'email',
+  'password',
+] as const) {
   @IsNotEmpty()
   @IsEmail()
   email: string;
 
-  @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @ApiProperty({ description: "User's password" })
   password: string;
 }

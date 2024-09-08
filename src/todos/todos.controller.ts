@@ -11,7 +11,14 @@ import { JwtGuard } from '../auth/jwt.guard';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { TodosService } from './todos.service';
 import { User } from '../users/users.entity';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { Todo } from './todos.entity';
 
 @ApiTags('todos')
@@ -28,6 +35,17 @@ export class TodosController {
 
   @Post()
   @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Create a new todo' })
+  @ApiCreatedResponse({
+    type: Todo,
+    description: 'Todo created',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
   async create(
     @Body() createTodoDto: CreateTodoDto,
     @Req() { user }: { user: User },

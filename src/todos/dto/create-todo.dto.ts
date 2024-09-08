@@ -1,14 +1,16 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { TodoBase } from '../todos.entity';
+import { OmitType, PickType } from '@nestjs/swagger';
 
-export class CreateTodoDto {
+export class CreateTodoDto extends PickType(TodoBase, [
+  'title',
+  'description',
+] as const) {
   @IsString()
   @IsNotEmpty()
-  @ApiProperty()
   title: string;
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty()
   description: string;
 }
