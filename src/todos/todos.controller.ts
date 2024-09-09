@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -36,7 +37,25 @@ export class TodosController {
 
   @Get()
   @UseGuards(JwtGuard)
-  @ApiOperation({ summary: 'Get all todos of the user' })
+  @ApiOperation({
+    summary: 'Get all todos of the user',
+    parameters: [
+      {
+        in: 'query',
+        name: 'page',
+        description: 'Page number',
+        required: false,
+        example: 1,
+      },
+      {
+        in: 'query',
+        name: 'limit',
+        description: 'Number of todos per page',
+        required: false,
+        example: 10,
+      },
+    ],
+  })
   @ApiOkResponse({ isArray: true, type: Todo })
   @ApiBadRequestResponse({
     description: 'Bad request',
@@ -44,8 +63,12 @@ export class TodosController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
   })
-  findAll(@Req() { user }: { user: User }) {
-    return this.todosService.findAllByUser(user);
+  findAll(
+    @Req() { user }: { user: User },
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    return this.todosService.findAllByUser(user, page, limit);
   }
 
   @Post()

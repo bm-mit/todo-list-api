@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { Todo } from './todos.entity';
 import { User } from '../users/users.entity';
 import { UpdateTodoDto } from './dto/update-todo.dto';
@@ -21,9 +21,14 @@ export class TodosService {
     return this.todoRepository.save(todo);
   }
 
-  findAllByUser(user: User) {
+  findAllByUser(user: User, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+    const take = limit;
     return this.todoRepository.find({
       where: { user },
+      order: { createdAt: 'DESC' },
+      skip,
+      take,
       relations: ['user'],
     });
   }
