@@ -57,12 +57,8 @@ export class TodosController {
     ],
   })
   @ApiOkResponse({ isArray: true, type: Todo })
-  @ApiBadRequestResponse({
-    description: 'Bad request',
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   findAll(
     @Req() { user }: { user: User },
     @Query('page') page: number = 1,
@@ -78,12 +74,8 @@ export class TodosController {
     type: Todo,
     description: 'Todo created',
   })
-  @ApiBadRequestResponse({
-    description: 'Bad request',
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   async create(
     @Body() createTodoDto: CreateTodoDto,
     @Req() { user }: { user: User },
@@ -98,12 +90,8 @@ export class TodosController {
     type: Todo,
     description: 'Todo updated',
   })
-  @ApiBadRequestResponse({
-    description: 'Bad request',
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({
     description: 'Todo not found or not owned by the user',
   })
@@ -119,12 +107,8 @@ export class TodosController {
   @HttpCode(204)
   @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Delete a todo' })
-  @ApiNoContentResponse({
-    description: 'Todo deleted',
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-  })
+  @ApiNoContentResponse({ description: 'Todo deleted' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({
     description: 'Todo not found or not owned by the user',
   })

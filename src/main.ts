@@ -12,7 +12,6 @@ function setupSwagger(app: INestApplication) {
     .setTitle('Todo List API')
     .setDescription('The Todo List API description')
     .setVersion('1.0')
-    .addTag('todo-list-api')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
