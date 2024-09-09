@@ -16,6 +16,7 @@ import { User } from '../users/users.entity';
 
 @Controller()
 @ApiTags('auth')
+@ApiBadRequestResponse({ description: 'Bad request' })
 export class AuthController {
   constructor(
     private usersService: UsersService,
@@ -25,7 +26,6 @@ export class AuthController {
   @Post('/register')
   @ApiOperation({ summary: 'Register a new user' })
   @ApiCreatedResponse({ type: User, description: 'User registered' })
-  @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiConflictResponse({ description: 'Email already exists' })
   async register(@Body() registerDto: RegisterDto) {
     return new User(await this.usersService.create(registerDto));
@@ -46,7 +46,6 @@ export class AuthController {
       },
     },
   })
-  @ApiBadRequestResponse({ description: 'Bad request' })
   @ApiUnauthorizedResponse({ description: 'Invalid email or password' })
   async login(@Body() loginDto: LoginDto) {
     return await this.authService.login(loginDto);
