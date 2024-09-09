@@ -10,19 +10,26 @@ export class TodoBase extends BaseEntity {
     name: 'user_id',
     type: Number,
     description: 'Id of the todo owner',
+    example: 0,
   })
   user: User;
 
-  @ApiProperty({ description: 'The title of the todo' })
+  @ApiProperty({
+    description: 'The title of the todo',
+    example: "Todo's title",
+  })
   title: string;
 
-  @ApiProperty({ description: 'The description of the todo' })
+  @ApiProperty({
+    description: 'The description of the todo',
+    example: "Todo's description or body",
+  })
   description: string;
 }
 
 @Entity('todos')
 export class Todo extends TodoBase {
-  @ManyToOne(() => User, (user) => user.todos)
+  @ManyToOne(() => User, (user) => user.todos, { onDelete: 'CASCADE' })
   @Transform(({ value }) => value.id)
   user: User;
 

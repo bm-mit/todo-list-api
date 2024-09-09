@@ -3,6 +3,7 @@ import { BaseEntity } from '../common/entities/base.entity';
 import { Exclude, Transform } from 'class-transformer';
 import { Todo } from '../todos/todos.entity';
 import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { MinLength } from 'class-validator';
 
 export class UserBase extends OmitType(BaseEntity, [
   'createdAt',
@@ -15,6 +16,7 @@ export class UserBase extends OmitType(BaseEntity, [
   email: string;
 
   @ApiProperty({ description: "User's password" })
+  @MinLength(8)
   password: string;
 }
 

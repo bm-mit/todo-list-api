@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
-  NotImplementedException,
+  HttpCode,
+  Param,
   Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -15,11 +18,15 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Todo } from './todos.entity';
+import { UpdateTodoDto } from './dto/update-todo.dto';
 
 @ApiTags('todos')
 @ApiBearerAuth()
@@ -29,8 +36,16 @@ export class TodosController {
 
   @Get()
   @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Get all todos of the user' })
+  @ApiOkResponse({ isArray: true, type: Todo })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
   findAll(@Req() { user }: { user: User }) {
-    throw new NotImplementedException();
+    return this.todosService.findAllByUser(user);
   }
 
   @Post()
@@ -51,5 +66,46 @@ export class TodosController {
     @Req() { user }: { user: User },
   ) {
     return new Todo(await this.todosService.create(createTodoDto, user));
+  }
+
+  @Put(':id')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Update a todo' })
+  @ApiOkResponse({
+    type: Todo,
+    description: 'Todo updated',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
+  @ApiNotFoundResponse({
+    description: 'Todo not found or not owned by the user',
+  })
+  async update(
+    @Body() updateTodoDto: UpdateTodoDto,
+    @Req() { user }: { user: User },
+    @Param('id') id: number,
+  ) {
+    return new Todo(await this.todosService.update(user, id, updateTodoDto));
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Delete a todo' })
+  @ApiNoContentResponse({
+    description: 'Todo deleted',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
+  @ApiNotFoundResponse({
+    description: 'Todo not found or not owned by the user',
+  })
+  async delete(@Req() { user }: { user: User }, @Param('id') id: number) {
+    await this.todosService.delete(user, id);
   }
 }
